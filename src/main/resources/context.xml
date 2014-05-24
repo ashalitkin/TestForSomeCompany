@@ -1,0 +1,5 @@
+<Resource name="jdbc/dbtest" auth="Container"
+          type="javax.sql.DataSource" driverClassName="com.mysql.jdbc.Driver"
+          url="jdbc:mysql://localhost/feedback?testDataArt"
+          username="root" password="root" maxActive="20" maxIdle="10"
+          maxWait="-1" />

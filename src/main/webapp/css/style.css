@@ -1,0 +1,57 @@
+div{
+}
+th{
+   border-style: solid;
+   border-width:1px;
+   border-color: grey;
+}
+th a {
+ text-decoration: none;
+}
+
+td {
+   border-bottom-style: solid;
+   border-bottom--width:1px;
+   border-bottom--color: grey;
+
+}
+table {
+ border-style: solid;
+ border-width:1px;
+ border-color: grey;
+}
+
+
+.menu{
+ border-style: solid;
+ border-width:1px;
+ border-color: grey;
+ padding: 10px;
+}
+
+.menu a{
+ color:black;
+}
+
+.productArea{
+ padding-left:50px;
+}
+.menu a:hover{
+ color:blue;
+}
+.columnLeft{
+ float: left;
+}
+
+.columnRight{
+ float: right;
+}
+
+.contentArea{
+ float: left;
+ border-style:none;
+}
+
+table{
+ padding: 20px 20px 20px 20px;
+}
