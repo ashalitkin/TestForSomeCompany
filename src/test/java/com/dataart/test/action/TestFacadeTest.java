@@ -3,7 +3,6 @@ package com.dataart.test.action;
 import com.dataart.test.dto.ShopInfo;
 import com.dataart.test.service.ShopInfoLoader;
 import com.dataart.test.service.exceptions.ValidationException;
-import com.sun.deploy.net.HttpRequest;
 import org.junit.Before;
 import org.junit.Test;
 
