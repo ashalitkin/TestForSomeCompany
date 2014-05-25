@@ -3,7 +3,6 @@ package com.dataart.test.action;
 import com.dataart.test.dto.ShopInfo;
 import com.dataart.test.service.ShopInfoLoader;
 import com.dataart.test.service.exceptions.ValidationException;
-import org.junit.Before;
 import org.junit.Test;
 
 
@@ -17,7 +16,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 import static org.mockito.Mockito.*;
-import static org.junit.Assert.*;
+
 /**
  * Example of the test.
  * I haven't written other tests as it's not a real application but a test exercise.
@@ -28,7 +27,7 @@ public class TestFacadeTest {
     @Test
     public void testDoGet_EverythingCorrectWithoutParameters() throws Exception{
         TestBuilder.checkThat().forRequest()
-                .and().havingShopInfoLoaderReturnValue()
+                .and().havingShopInfoLoaderReturnsValue()
                 .afterInvocation().attributeIsSet("shopInfo", ShopInfo.class).requestIsForwarded();
 
     }
@@ -37,7 +36,7 @@ public class TestFacadeTest {
     public void testDoGet_EverythingCorrectWithProperParameters() throws Exception{
         TestBuilder.checkThat().forRequest()
                 .withParameter("group", "1").withParameter("page","1").withParameter("orderBy","SomeOrder")
-                .and().havingShopInfoLoaderReturnValue()
+                .and().havingShopInfoLoaderReturnsValue()
                 .afterInvocation().attributeIsSet("shopInfo", ShopInfo.class).requestIsForwarded();
 
     }
@@ -46,7 +45,7 @@ public class TestFacadeTest {
     public void testDoGet_exceptionIsThrownWhenPageIsNotNumeric() throws Exception{
         TestBuilder.checkThat().forRequest()
                 .withParameter("group", "1").withParameter("page","1we")
-                .and().havingShopInfoLoaderReturnValue()
+                .and().havingShopInfoLoaderReturnsValue()
                 .afterInvocation().attributeIsSet("shopInfo", ShopInfo.class).requestIsForwarded();
 
     }
@@ -55,8 +54,8 @@ public class TestFacadeTest {
     public void testDoGet_exceptionIsThrownWhenPageLessThen1() throws Exception{
         TestBuilder.checkThat().forRequest()
                 .withParameter("group", "1").withParameter("page","0")
-                .and().havingShopInfoLoaderReturnValue()
-                .afterInvocation().attributeIsSet("shopInfo", ShopInfo.class).requestIsForwarded();
+                .and().havingShopInfoLoaderReturnsValue()
+                .afterInvocation();
 
     }
 
@@ -64,8 +63,17 @@ public class TestFacadeTest {
     public void testDoGet_exceptionIsThrownWhenGroupIsNotNumeric() throws Exception{
         TestBuilder.checkThat().forRequest()
                 .withParameter("group", "1ee").withParameter("page","1")
-                .and().havingShopInfoLoaderReturnValue()
-                .afterInvocation().attributeIsSet("shopInfo", ShopInfo.class).requestIsForwarded();
+                .and().havingShopInfoLoaderReturnsValue()
+                .afterInvocation();
+
+    }
+
+    @Test(expected = ServletException.class)
+    public void testDoGet_exceptionIsThrownBecauseOfSevereError() throws Exception{
+        TestBuilder.checkThat().forRequest()
+                .withParameter("group", "1").withParameter("page","1")
+                .and().havingShopInfoLoaderThrowsException()
+                .afterInvocation();
 
     }
 
@@ -104,8 +112,13 @@ public class TestFacadeTest {
             return new RequestBuilder(this);
         }
 
-        public TestBuilder havingShopInfoLoaderReturnValue() throws SQLException {
+        public TestBuilder havingShopInfoLoaderReturnsValue() throws SQLException {
             when(shopInfoLoader.load(any(Long.class),any(Integer.class), any(String.class))).thenReturn(new ShopInfo());
+            return this;
+        }
+
+        public TestBuilder havingShopInfoLoaderThrowsException() throws SQLException {
+            when(shopInfoLoader.load(any(Long.class),any(Integer.class), any(String.class))).thenThrow(new RuntimeException());
             return this;
         }
 

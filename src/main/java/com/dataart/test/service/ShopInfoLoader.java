@@ -6,6 +6,7 @@ import com.dataart.test.dto.ShopInfo;
 import com.dataart.test.service.exceptions.NoDataAvailableException;
 
 import javax.sql.DataSource;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
@@ -32,14 +33,15 @@ public class ShopInfoLoader extends DBExtractor {
         super(dataSource);
     }
 
-    public ShopInfo load(final Long groupId, final Integer page, final String orderByField) throws SQLException {
-        List<GroupInfo> groupInfos = loadGroupInfo();
+    @Override
+    public ShopInfo _load(Connection connection, Long groupId, Integer page, String orderByField) throws SQLException {
+        List<GroupInfo> groupInfos = loadGroupInfo(connection);
 
         final long refinedGroupId = getRefinedGroupId(groupId, groupInfos);
         final int refinedPage = getRefinedPage(page);
         ProductsOrdering ordering = getProductsOrdering(orderByField);
 
-        List<ProductInfo> productInfos = loadProductsInfo(refinedGroupId, refinedPage, ordering.getSql());
+        List<ProductInfo> productInfos = loadProductsInfo(connection, refinedGroupId, refinedPage, ordering.getSql());
         return new ShopInfo(productInfos, refinedPage, groupInfos, ordering, refinedGroupId);
     }
 
@@ -62,9 +64,9 @@ public class ShopInfoLoader extends DBExtractor {
         }
     }
 
-    private List<ProductInfo> loadProductsInfo(final long groupId, final int page, final String sql) throws SQLException {
+    private List<ProductInfo> loadProductsInfo(Connection connection, final long groupId, final int page, final String sql) throws SQLException {
         logger.log(Level.FINE, String.format("loading products for group=%0$d, page=%1$d, sql=%2$s", groupId, page, sql));
-        return extractList(sql, rs -> {
+        return extractList(connection, sql, rs -> {
             return new ProductInfo(rs.getLong(1), rs.getString(2), rs.getBigDecimal(3));
         }, st -> {
             st.setLong(1, groupId);
@@ -73,8 +75,8 @@ public class ShopInfoLoader extends DBExtractor {
         });
     }
 
-    private List<GroupInfo> loadGroupInfo() throws SQLException {
-        return extractList(GET_GROUP_INFO, rs -> {
+    private List<GroupInfo> loadGroupInfo(Connection connection) throws SQLException {
+        return extractList(connection, GET_GROUP_INFO, rs -> {
             return new GroupInfo(rs.getLong(1), rs.getString(2), rs.getInt(3));
         });
     }
