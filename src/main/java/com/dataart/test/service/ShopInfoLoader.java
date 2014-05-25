@@ -34,7 +34,7 @@ public class ShopInfoLoader extends DBExtractor {
     }
 
     @Override
-    public ShopInfo _load(Connection connection, Long groupId, Integer page, String orderByField) throws SQLException {
+    protected ShopInfo _load(Connection connection, Long groupId, Integer page, String orderByField) throws SQLException {
         List<GroupInfo> groupInfos = loadGroupInfo(connection);
 
         final long refinedGroupId = getRefinedGroupId(groupId, groupInfos);

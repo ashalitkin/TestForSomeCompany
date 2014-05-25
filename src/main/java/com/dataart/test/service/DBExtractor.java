@@ -46,7 +46,7 @@ public abstract class DBExtractor {
         return shopInfo;
     }
 
-    public abstract ShopInfo _load(final Connection connection, final Long groupId, final Integer page, final String orderByField) throws SQLException;
+    protected abstract ShopInfo _load(final Connection connection, final Long groupId, final Integer page, final String orderByField) throws SQLException;
 
     protected <T> List<T> extractList(final Connection connection, final String sql, SQLFunction<ResultSet, T> transformer) throws SQLException {
         return extractList(connection, sql, transformer, e -> {
